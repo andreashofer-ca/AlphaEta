@@ -1,0 +1,87 @@
+{
+  // ==========================================================================
+  // Josh — AI & Tech Research Agent
+  // ==========================================================================
+  // Researches AI/tech topics, drafts blog posts and social content.
+  // Communicates via Telegram.
+  // ==========================================================================
+
+  // Inherit shared provider/model config (mounted from shared/)
+  // The shared openclaw-base.json is merged at container startup via setup script
+
+  "agents": {
+    "defaults": {
+      "models": {
+        "primary": "ollama/qwen3:14b",
+        "secondary": "ollama/qwen3-coder-next:cloud",
+        "fallback": "anthropic/claude-sonnet-4-5-20250929"
+      }
+    },
+    "list": [
+      {
+        "name": "josh",
+        "displayName": "Josh — Research & Content",
+        "agentDir": "/home/node/.openclaw/agents/josh",
+        "workspace": "/home/node/.openclaw/workspace",
+
+        // --- Josh's Personality ---
+        "systemPrompt": "You are Josh, an AI research assistant specializing in AI & Technology topics. Your responsibilities:\n\n1. **Research**: Monitor and research the latest developments in AI, machine learning, LLMs, developer tools, and emerging tech trends.\n2. **Draft Content**: Write well-structured blog posts, social media threads, and short-form content based on your research.\n3. **Organize**: Save research findings as structured markdown files in your workspace, organized by date and topic.\n4. **Proactive Updates**: When asked, provide summaries of what's trending in AI/tech.\n\nTone: Knowledgeable but accessible. Write for a technical audience that appreciates depth without jargon overload.\n\nAlways save drafts to your workspace with clear filenames like: YYYY-MM-DD-topic-slug.md",
+
+        // --- Josh's Tools ---
+        "tools": {
+          "exec": { "allow": true },
+          "read": { "allow": true },
+          "write": { "allow": true },
+          "edit": { "allow": true },
+          "browser": { "allow": true },
+          "cron": { "allow": true }
+        },
+
+        // --- Josh's Skills ---
+        "skills": {
+          "entries": {
+            "web-search": { "enabled": true },
+            "summarize": { "enabled": true }
+          }
+        }
+      }
+    ]
+  },
+
+  // --- Telegram Channel for Josh ---
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "token": "${JOSH_TELEGRAM_BOT_TOKEN}",
+      "polling": true,
+      "dmPolicy": "allow",
+      "groupPolicy": "mention",
+      "bindings": {
+        "default": "josh"
+      }
+    }
+  },
+
+  // --- Models & Providers (merged from shared base) ---
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://10.0.0.181:11434/v1",
+        "apiKey": "ollama-local",
+        "api": "openai-responses"
+      },
+      "anthropic": {
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      },
+      "openai": {
+        "apiKey": "${OPENAI_API_KEY}"
+      }
+    }
+  },
+
+  // --- Gateway ---
+  "gateway": {
+    "token": "${OPENCLAW_GATEWAY_TOKEN}",
+    "port": 18789
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "web-search",
+  "displayName": "Web Search",
+  "description": "Search the web for current information using DuckDuckGo or similar search engines.",
+  "version": "1.0.0",
+  "enabled": true,
+  "tools": {
+    "search": {
+      "description": "Search the web for a query and return results",
+      "parameters": {
+        "query": {
+          "type": "string",
+          "description": "The search query",
+          "required": true
+        },
+        "maxResults": {
+          "type": "number",
+          "description": "Maximum number of results to return",
+          "default": 5
+        }
+      }
+    }
+  }
+}

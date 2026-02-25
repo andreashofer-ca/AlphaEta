@@ -1,0 +1,88 @@
+{
+  // ==========================================================================
+  // AlphaEta Shared Configuration
+  // ==========================================================================
+  // This is the BASE config shared by all agents. Each agent's openclaw.json
+  // imports these defaults and adds agent-specific overrides.
+  //
+  // Models, providers, and common skills are defined here ONCE.
+  // Agent-specific personality, tools, and channel bindings live per-agent.
+  // ==========================================================================
+
+  // --- Model Providers ---
+  "models": {
+    "providers": {
+      // Primary: Local Ollama instance
+      "ollama": {
+        "baseUrl": "http://10.0.0.181:11434/v1",
+        "apiKey": "ollama-local",
+        "api": "openai-responses"
+      },
+      // Fallback 1: Anthropic Claude
+      "anthropic": {
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      },
+      // Fallback 2: OpenAI
+      "openai": {
+        "apiKey": "${OPENAI_API_KEY}"
+      }
+    }
+  },
+
+  // --- Agent Defaults (inherited by all agents) ---
+  "agents": {
+    "defaults": {
+      "models": {
+        // Primary model: Ollama qwen3:14b for most tasks
+        "primary": "ollama/qwen3:14b",
+        // Secondary/coding model
+        "secondary": "ollama/qwen3-coder-next:cloud",
+        // Cloud fallbacks (used when Ollama is unavailable or for complex tasks)
+        "fallback": "anthropic/claude-sonnet-4-5-20250929",
+        // Model catalog - allowlist for /model command
+        "catalog": [
+          "ollama/qwen3:14b",
+          "ollama/qwen3-coder-next:cloud",
+          "anthropic/claude-sonnet-4-5-20250929",
+          "anthropic/claude-haiku-4-5-20251001",
+          "openai/gpt-4o",
+          "openai/gpt-4o-mini"
+        ]
+      },
+
+      // --- Common Skills ---
+      "skills": {
+        "allowBundled": true,
+        "load": {
+          "extraDirs": ["/home/node/.openclaw/shared-skills"]
+        }
+      },
+
+      // --- Common Tool Defaults ---
+      "tools": {
+        "defaults": {
+          "exec": { "allow": true },
+          "read": { "allow": true },
+          "write": { "allow": true },
+          "edit": { "allow": true },
+          "browser": { "allow": false },
+          "cron": { "allow": false }
+        }
+      },
+
+      // --- Memory ---
+      "memory": {
+        "enabled": true,
+        "provider": "local"
+      },
+
+      // --- Security Defaults ---
+      "security": {
+        "humanInTheLoop": {
+          "enabled": true,
+          "irreversibleActions": true
+        }
+      }
+    }
+  }
+}

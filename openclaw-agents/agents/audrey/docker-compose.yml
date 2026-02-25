@@ -1,0 +1,72 @@
+# =============================================================================
+# Audrey — Personal Schedule & Habit Tracker Agent
+# =============================================================================
+# Docker Compose for the Audrey OpenClaw agent.
+# Runs on ports 18791 (gateway) and 18792 (bridge).
+#
+# Usage:
+#   docker compose up -d          # Start Audrey
+#   docker compose logs -f        # Follow logs
+#   docker compose down           # Stop Audrey
+#   docker compose run --rm audrey-cli onboard   # First-time setup
+#   docker compose run --rm audrey-cli dashboard --no-open  # Get dashboard URL
+# =============================================================================
+
+services:
+  audrey-gateway:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: audrey-gateway
+    restart: unless-stopped
+    command: node dist/index.js gateway
+
+    ports:
+      - "${AUDREY_GATEWAY_PORT:-18791}:18789"
+      - "${AUDREY_BRIDGE_PORT:-18792}:18790"
+
+    environment:
+      # Gateway
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      # Cloud API Keys (for fallback)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      # Telegram
+      - TELEGRAM_BOT_TOKEN=${AUDREY_TELEGRAM_BOT_TOKEN}
+
+    volumes:
+      # Agent-specific config
+      - ./openclaw.json:/home/node/.openclaw/openclaw.json:ro
+      # Agent workspace (persistent — habit data, schedule files)
+      - ./workspace:/home/node/.openclaw/workspace
+      # Shared skills
+      - ../../shared/skills:/home/node/.openclaw/shared-skills:ro
+      # Agent-specific skills
+      - ./skills:/home/node/.openclaw/workspace/skills
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    labels:
+      - "com.alphaeta.agent=audrey"
+      - "com.alphaeta.role=schedule-habits"
+
+  audrey-cli:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: audrey-cli
+    profiles:
+      - cli
+    command: node dist/index.js
+
+    environment:
+      - OPENCLAW_GATEWAY_TOKEN=${OPENCLAW_GATEWAY_TOKEN}
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - TELEGRAM_BOT_TOKEN=${AUDREY_TELEGRAM_BOT_TOKEN}
+
+    volumes:
+      - ./openclaw.json:/home/node/.openclaw/openclaw.json:ro
+      - ./workspace:/home/node/.openclaw/workspace
+      - ../../shared/skills:/home/node/.openclaw/shared-skills:ro
+      - ./skills:/home/node/.openclaw/workspace/skills
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

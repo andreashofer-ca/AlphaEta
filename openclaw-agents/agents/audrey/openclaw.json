@@ -1,0 +1,95 @@
+{
+  // ==========================================================================
+  // Audrey — Personal Schedule & Habit Tracker Agent
+  // ==========================================================================
+  // Manages personal schedule, tracks health + productivity habits,
+  // sends reminders and daily summaries via Telegram.
+  // ==========================================================================
+
+  "agents": {
+    "defaults": {
+      "models": {
+        "primary": "ollama/qwen3:14b",
+        "secondary": "ollama/qwen3-coder-next:cloud",
+        "fallback": "anthropic/claude-sonnet-4-5-20250929"
+      }
+    },
+    "list": [
+      {
+        "name": "audrey",
+        "displayName": "Audrey — Schedule & Habits",
+        "agentDir": "/home/node/.openclaw/agents/audrey",
+        "workspace": "/home/node/.openclaw/workspace",
+
+        // --- Audrey's Personality ---
+        "systemPrompt": "You are Audrey, a personal schedule manager and habit tracker. Your responsibilities:\n\n1. **Schedule Management**: Track appointments, meetings, deadlines, and events. Remind me of upcoming commitments.\n2. **Habit Tracking**: Track daily habits across health and productivity categories.\n   - Health: exercise, sleep quality, water intake, meditation, nutrition\n   - Productivity: deep work sessions, reading time, learning goals, project milestones\n3. **Daily Summaries**: Provide morning briefings (today's schedule + habit goals) and evening recaps (what was completed, streaks, areas for improvement).\n4. **Streak Tracking**: Maintain streak counts for each habit and celebrate milestones.\n5. **Gentle Accountability**: Send friendly reminders without being annoying. Adapt reminder frequency based on my patterns.\n\nData Storage: Maintain habit data in structured JSON files in your workspace:\n- habits/YYYY-MM-DD.json for daily logs\n- habits/streaks.json for current streak counts\n- schedule/YYYY-MM.json for monthly schedule\n\nTone: Warm, encouraging, and organized. Like a supportive personal assistant who genuinely cares about my wellbeing.",
+
+        // --- Audrey's Tools ---
+        "tools": {
+          "exec": { "allow": true },
+          "read": { "allow": true },
+          "write": { "allow": true },
+          "edit": { "allow": true },
+          "browser": { "allow": false },
+          "cron": { "allow": true }
+        },
+
+        // --- Audrey's Skills ---
+        "skills": {
+          "entries": {
+            "summarize": { "enabled": true }
+          }
+        },
+
+        // --- Cron Jobs for Reminders ---
+        "cron": {
+          "morningBrief": {
+            "schedule": "0 7 * * *",
+            "prompt": "Give me my morning briefing: today's schedule, habit goals for the day, and any active streaks to maintain."
+          },
+          "eveningRecap": {
+            "schedule": "0 21 * * *",
+            "prompt": "Give me my evening recap: summarize what I accomplished today, update habit streaks, note any missed habits, and preview tomorrow's schedule."
+          }
+        }
+      }
+    ]
+  },
+
+  // --- Telegram Channel for Audrey ---
+  "channels": {
+    "telegram": {
+      "enabled": true,
+      "token": "${AUDREY_TELEGRAM_BOT_TOKEN}",
+      "polling": true,
+      "dmPolicy": "allow",
+      "groupPolicy": "mention",
+      "bindings": {
+        "default": "audrey"
+      }
+    }
+  },
+
+  // --- Models & Providers (same as shared base) ---
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://10.0.0.181:11434/v1",
+        "apiKey": "ollama-local",
+        "api": "openai-responses"
+      },
+      "anthropic": {
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      },
+      "openai": {
+        "apiKey": "${OPENAI_API_KEY}"
+      }
+    }
+  },
+
+  // --- Gateway ---
+  "gateway": {
+    "token": "${OPENCLAW_GATEWAY_TOKEN}",
+    "port": 18791
+  }
+}

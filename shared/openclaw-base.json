@@ -1,0 +1,29 @@
+{
+  // ==========================================================================
+  // AlphaEta Shared Configuration — Reference
+  // ==========================================================================
+  // This file documents the shared model providers and settings used by
+  // all agents. Each agent's openclaw.json contains its own copy of
+  // these provider configs.
+  //
+  // When adding a new agent, copy the models.providers block from here.
+  // ==========================================================================
+
+  "models": {
+    "providers": {
+      "ollama": {
+        "baseUrl": "http://10.0.0.181:11434/v1",
+        "apiKey": "ollama-local",
+        "api": "openai-responses"
+      },
+      "anthropic": {
+        "apiKey": "${ANTHROPIC_API_KEY}"
+      },
+      "openrouter": {
+        "baseUrl": "https://openrouter.ai/api/v1",
+        "apiKey": "${OPENROUTER_API_KEY}",
+        "api": "openai-responses"
+      }
+    }
+  }
+}

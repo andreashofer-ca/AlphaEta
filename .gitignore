@@ -1,0 +1,27 @@
+# Secrets
+.env
+agents/*/.env
+
+# Agent runtime state (lives in Docker, not Git)
+agents/*/config/
+agents/*/workspace/*
+!agents/*/workspace/.gitkeep
+!agents/*/workspace/SOUL.md
+!agents/*/workspace/USER.md
+
+# OpenClaw runtime files
+*.log
+*.pid
+auth-profiles.json
+sessions/
+
+# Docker
+docker-compose.override.yml
+
+# macOS
+.DS_Store
+**/.DS_Store
+
+# IDE
+.vscode/
+.idea/

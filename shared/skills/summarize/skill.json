@@ -1,0 +1,29 @@
+{
+  "name": "summarize",
+  "displayName": "Content Summarizer",
+  "description": "Summarize long-form content into concise, structured summaries.",
+  "version": "1.0.0",
+  "enabled": true,
+  "tools": {
+    "summarize": {
+      "description": "Summarize text content into key points",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "The content to summarize",
+          "required": true
+        },
+        "style": {
+          "type": "string",
+          "description": "Summary style: 'bullets', 'paragraph', 'tldr'",
+          "default": "bullets"
+        },
+        "maxLength": {
+          "type": "number",
+          "description": "Maximum word count for the summary",
+          "default": 200
+        }
+      }
+    }
+  }
+}

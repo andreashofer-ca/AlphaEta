@@ -1,0 +1,34 @@
+{
+  "name": "common-tools",
+  "displayName": "Common Utilities",
+  "description": "Shared utility tools available to all AlphaEta agents: file management, date/time helpers, and formatting.",
+  "version": "1.0.0",
+  "enabled": true,
+  "tools": {
+    "format-markdown": {
+      "description": "Format content as clean markdown with proper headings and structure",
+      "parameters": {
+        "content": {
+          "type": "string",
+          "description": "Raw content to format",
+          "required": true
+        },
+        "template": {
+          "type": "string",
+          "description": "Template type: 'blog-post', 'notes', 'report', 'habit-log'",
+          "default": "notes"
+        }
+      }
+    },
+    "today": {
+      "description": "Get current date and time in various formats",
+      "parameters": {
+        "format": {
+          "type": "string",
+          "description": "Date format: 'iso', 'human', 'filename'",
+          "default": "iso"
+        }
+      }
+    }
+  }
+}

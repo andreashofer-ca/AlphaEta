@@ -1,0 +1,81 @@
+# =============================================================================
+# Josh — AI & Tech Research Agent
+# =============================================================================
+# Docker Compose for the Josh OpenClaw agent.
+# Runs on ports 18789 (gateway) and 18790 (bridge).
+#
+# Usage:
+#   docker compose --env-file ../../.env up -d josh-gateway    # Start Josh
+#   docker compose --env-file ../../.env logs -f               # Follow logs
+#   docker compose --env-file ../../.env down                  # Stop Josh
+#   docker compose --env-file ../../.env run --rm josh-cli onboard --no-install-daemon
+#   docker compose --env-file ../../.env run --rm josh-cli dashboard --no-open
+# =============================================================================
+
+services:
+  josh-gateway:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: josh-gateway
+    restart: unless-stopped
+    init: true
+    command:
+      - "node"
+      - "dist/index.js"
+      - "gateway"
+      - "--bind"
+      - "lan"
+      - "--port"
+      - "18789"
+
+    ports:
+      - "${JOSH_GATEWAY_PORT:-18789}:18789"
+      - "${JOSH_BRIDGE_PORT:-18790}:18790"
+
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${JOSH_TELEGRAM_BOT_TOKEN}
+
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./workspace:/home/node/.openclaw/workspace
+      - ../../shared/skills:/home/node/.openclaw/shared-skills:ro
+      - ./skills:/home/node/.openclaw/workspace/skills
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+    labels:
+      - "com.alphaeta.agent=josh"
+      - "com.alphaeta.role=research"
+
+  josh-cli:
+    image: ghcr.io/openclaw/openclaw:latest
+    container_name: josh-cli
+    profiles:
+      - cli
+    entrypoint: ["node", "dist/index.js"]
+    stdin_open: true
+    tty: true
+    init: true
+
+    environment:
+      HOME: /home/node
+      TERM: xterm-256color
+      OPENCLAW_GATEWAY_TOKEN: ${OPENCLAW_GATEWAY_TOKEN}
+      BROWSER: echo
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY}
+      TELEGRAM_BOT_TOKEN: ${JOSH_TELEGRAM_BOT_TOKEN}
+
+    volumes:
+      - ./config:/home/node/.openclaw
+      - ./workspace:/home/node/.openclaw/workspace
+      - ../../shared/skills:/home/node/.openclaw/shared-skills:ro
+      - ./skills:/home/node/.openclaw/workspace/skills
+
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

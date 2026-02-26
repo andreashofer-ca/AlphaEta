@@ -91,6 +91,13 @@
     }
   },
 
+  "gateway": {
+    "bind": "lan",
+    "controlUi": {
+      "dangerouslyAllowHostHeaderOriginFallback": true
+    }
+  },
+
   "bindings": [
     {
       "agentId": "audrey",

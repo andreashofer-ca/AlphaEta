@@ -6,17 +6,12 @@
         "fallbacks": [
           "openrouter/auto",
           "anthropic/claude-sonnet-4-5-20250929"
-        ],
-        "aliases": {
-          "ollama": "ollama/qwen3:14b",
-          "open": "openrouter/auto",
-          "claude": "anthropic/claude-sonnet-4-5-20250929"
-        }
+        ]
       },
       "models": {
-        "ollama/qwen3:14b": {},
-        "openrouter/auto": {},
-        "anthropic/claude-sonnet-4-5-20250929": {},
+        "ollama/qwen3:14b": { "alias": "ollama" },
+        "openrouter/auto": { "alias": "open" },
+        "anthropic/claude-sonnet-4-5-20250929": { "alias": "claude" },
         "openrouter/google/gemini-2.5-flash": {},
         "openrouter/openai/gpt-4o": {}
       }

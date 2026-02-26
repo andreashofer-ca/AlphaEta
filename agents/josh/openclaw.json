@@ -1,5 +1,26 @@
 {
   "agents": {
+    "defaults": {
+      "model": {
+        "primary": "ollama/qwen3:14b",
+        "fallbacks": [
+          "openrouter/auto",
+          "anthropic/claude-sonnet-4-5-20250929"
+        ],
+        "aliases": {
+          "ollama": "ollama/qwen3:14b",
+          "open": "openrouter/auto",
+          "claude": "anthropic/claude-sonnet-4-5-20250929"
+        }
+      },
+      "models": {
+        "ollama/qwen3:14b": {},
+        "openrouter/auto": {},
+        "anthropic/claude-sonnet-4-5-20250929": {},
+        "openrouter/google/gemini-2.5-flash": {},
+        "openrouter/openai/gpt-4o": {}
+      }
+    },
     "list": [
       {
         "id": "josh",
@@ -56,6 +77,14 @@
         "apiKey": "${OPENROUTER_API_KEY}",
         "api": "openai-completions",
         "models": [
+          {
+            "id": "auto",
+            "name": "OpenRouter Auto",
+            "reasoning": false,
+            "input": ["text"],
+            "contextWindow": 128000,
+            "maxTokens": 16384
+          },
           {
             "id": "openai/gpt-4o",
             "name": "GPT-4o via OpenRouter",
